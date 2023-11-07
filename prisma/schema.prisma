@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["extendedIndexes"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model user {
+  id            Int            @id @default(autoincrement())
+  name          String
+  messages      message[]      
+  points        Int
+}
+
+model message {
+ id      Int      @id @default(autoincrement())
+  date    DateTime @default(now())
+  name    String
+  text    String
+  userId  Int
+  user    user     @relation(fields: [userId], references: [id]) // Define the relation
+}
