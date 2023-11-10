@@ -37,57 +37,6 @@ app.get('/getUsers', async (req, res) => {
     }
 });
 
-// API to add all new messages to given user
-app.post('/addMessages', async (req, res) => {
-    try {
-        const userId = req.body.id;
-        const messages = req.body.messages;
-
-        const user = await prisma.user.update({
-            where: {
-                id: userId,
-            },
-            data: {
-                messages: {
-                    create: messages.map((message) => {
-                        return {
-                            text: message.text,
-                        };
-                    }),
-                },
-            },
-        });
-
-        res.json(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error adding messages' });
-    }
-});
-
-// API to retrieve all messages for given user
-// Get all messages
-app.get('/getMessages/:userId', async (req, res) => {
-    try {
-        const userId = parseInt(req.params.userId);
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-        });
-
-        if (!user) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
-        const messages = await prisma.message.findMany({
-            where: { userId },
-        });
-        res.json(messages);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error retrieving messages' });
-    }
-});
-
 // Fuse two users and merge their messages into one user
 app.post('/fuseUsers', async (req, res) => {
     try {
@@ -97,12 +46,10 @@ app.post('/fuseUsers', async (req, res) => {
         // Find the users by their IDs
         const user1 = await prisma.user.findUnique({
             where: { id: userId1 },
-            include: { messages: true }, // Include messages for the first user
         });
 
         const user2 = await prisma.user.findUnique({
             where: { id: userId2 },
-            include: { messages: true }, // Include messages for the second user
         });
 
         if (!user1 || !user2) {
@@ -110,17 +57,12 @@ app.post('/fuseUsers', async (req, res) => {
             return;
         }
 
-        // Merge messages of user2 into user1
-        user2.messages.forEach((message) => {
-            user1.messages.push(message);
-        });
-
         // Update user1 with merged messages
         const updatedUser = await prisma.user.update({
             where: { id: userId1 },
             data: {
-                messages: {
-                    set: user1.messages, // Set the merged messages for user1
+                points: {
+                    increment: user2.points,
                 },
             },
         });
@@ -166,6 +108,97 @@ app.post('/addPoints/:userId', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error adding points' });
+    }
+});
+
+app.post('/addMessageCount/:userId', async (req, res) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const messageAmount = req.body.messageAmount;
+
+        // Find the user by ID to ensure it exists
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+        });
+
+        if (!user) {
+            res.status(404).json({ error: 'User not found' });
+            return;
+        }
+
+        // Update the user with added points
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                messageAmount: {
+                    increment: messageAmount, // Increment the user's messageAmount
+                },
+            },
+        });
+
+        res.json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error adding points' });
+    }
+});
+
+app.post('/addLatestMessageDate', async (req, res) => {
+    try {
+        const date = req.body.date;
+        // Add the latestMessageDate in the 'latestMessageDate' table
+        await prisma.lastMessageDate.create({
+            data: {
+                date: date,
+            },
+        });
+        res.json({ message: `Latest message date ${date} was added successfully` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error adding latest message date' });
+    }
+});
+
+app.post('/wipeDatabase', async (req, res) => {
+    try {
+        // Delete all records from the 'user' and 'message' tables
+        await prisma.user.deleteMany({});
+        await prisma.lastMessageDate.deleteMany({});
+
+        // Add the latestMessageDate in the 'latestMessageDate' table
+        await prisma.lastMessageDate.create({
+            data: {
+                date: new Date(2023, 9, 23, 0, 0),
+                //date: new Date(2021, 9, 23, 0, 0),
+            },
+        });
+
+        res.json({ message: 'Database wiped successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error wiping the database' });
+    }
+});
+
+app.get('/latestMessageDate', async (req, res) => {
+    try {
+        // Get the latest message date from the 'latestMessageDate' table
+        const date = await prisma.lastMessageDate.findFirst({
+            orderBy: {
+                date: 'desc',
+            },
+        });
+        if (date) {
+            const isoDate = date.date.toISOString();
+            console.log(isoDate + " Date is sent");
+            res.json(isoDate);
+        } else {
+            console.log("No date found");
+            res.json({ message: 'No latest message date found' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error getting latest message date' });
     }
 });
 
