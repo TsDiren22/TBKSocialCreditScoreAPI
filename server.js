@@ -169,7 +169,6 @@ app.post('/wipeDatabase', async (req, res) => {
         await prisma.lastMessageDate.create({
             data: {
                 date: new Date(2023, 9, 23, 0, 0),
-                //date: new Date(2021, 9, 23, 0, 0),
             },
         });
 
