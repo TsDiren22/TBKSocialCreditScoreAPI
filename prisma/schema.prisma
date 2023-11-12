@@ -13,6 +13,9 @@ model user {
   name          String  
   points        Int            @default(0)
   messageAmount Int            @default(0)
+  username      String?         @unique
+  password      String?
+  phone         String?        @unique
 }
 
 model lastMessageDate {

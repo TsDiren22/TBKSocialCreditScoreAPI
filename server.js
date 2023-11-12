@@ -2,14 +2,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const cookieParser = require('cookie-parser');
 
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ credentials: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(express.json())
+app.use(cookieParser())
+
 
 // API to create a new user
 app.post('/createUser', async (req, res) => {
@@ -189,10 +195,8 @@ app.get('/latestMessageDate', async (req, res) => {
         });
         if (date) {
             const isoDate = date.date.toISOString();
-            console.log(isoDate + " Date is sent");
             res.json(isoDate);
         } else {
-            console.log("No date found");
             res.json({ message: 'No latest message date found' });
         }
     } catch (error) {
@@ -200,5 +204,119 @@ app.get('/latestMessageDate', async (req, res) => {
         res.status(500).json({ error: 'Error getting latest message date' });
     }
 });
+
+app.post('/register', async (req, res) => {
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+
+    const name = req.body.name;
+
+    const user = await prisma.user.findFirst({
+        where: { name: name },
+    });
+
+    const usernameCheck = await prisma.user.findFirst({
+        where: { username: req.body.username }
+    });
+
+    const phoneCheck = await prisma.user.findFirst({
+        where: { phone: req.body.phone }
+    });
+
+    if (!user) {
+        res.status(404).json({ error: "User doesn't exist" });
+        return;
+    } else if (user.password != null) {
+        res.status(400).json({ error: "User already registered" });
+        return;
+    } else if (usernameCheck) {
+        res.status(400).json({ error: "Username already taken" });
+        return;
+    } else if (phoneCheck) {
+        res.status(400).json({ error: "Phone number already taken" });
+        return;
+    }
+
+    user.password = hashedPassword
+    user.username = req.body.username
+    user.phone = req.body.phone
+
+    await prisma.user.update({
+        where: { id: user.id },
+        data: user
+    })
+
+    const token = jwt.sign({ _id: user.id }, "secret")
+
+
+    res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000
+    })
+
+    res.json({
+        message: "success"
+    })
+})
+
+app.post('/login', async (req, res) => {
+    const user = await prisma.user.findFirst({
+        where: { username: req.body.username }
+    })
+
+    if (!user) {
+        return res.status(404).send({
+            message: 'user not found'
+        })
+    }
+
+    if (!await bcrypt.compare(req.body.password, user.password)) {
+        return res.status(400).send({
+            message: 'invalid credentials'
+        })
+    }
+
+    const token = jwt.sign({ _id: user.id }, "secret")
+
+    res.cookie('jwt', token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+    })
+
+    res.send({
+        message: 'success'
+    })
+})
+
+app.get('/user', async (req, res) => {
+    try {
+        const cookie = req.cookies['jwt']
+        const claims = jwt.verify(cookie, 'secret')
+
+        if (!claims) {
+            return res.status(401).send({
+                message: 'unauthenticated'
+            })
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { id: claims._id }
+        })
+
+        res.send(user)
+    } catch (e) {
+        return res.status(401).send({
+            message: 'unauthenticated'
+        })
+    }
+})
+
+app.post('/logout', (req, res) => {
+    res.cookie('jwt', '', { maxAge: 0 })
+
+    res.send({
+        message: 'success'
+    })
+})
 
 app.listen(3000, () => console.log('Server running on port 3000'));
