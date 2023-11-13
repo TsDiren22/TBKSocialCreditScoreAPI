@@ -232,10 +232,10 @@ app.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
-    const name = req.body.name;
+    const id = req.body.id;
 
     const user = await prisma.user.findUnique({
-        where: { name: name },
+        where: { id: id },
     });
 
     console.log(user)
