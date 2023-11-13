@@ -11,9 +11,10 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 const app = express();
 
 app.use(cors({
-    origin: '*',
+    origin: 'https://tbksocialcreditsystem.web.app',
     credentials: true
 }));
+
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
@@ -227,6 +228,7 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -235,6 +237,8 @@ app.post('/register', async (req, res) => {
     const user = await prisma.user.findUnique({
         where: { name: name },
     });
+
+    console.log(user)
 
     const usernameCheck = await prisma.user.findUnique({
         where: { username: req.body.username }
@@ -258,12 +262,16 @@ app.post('/register', async (req, res) => {
     user.username = req.body.username
     user.phone = req.body.phone
 
+    console.log(user)
+
     await prisma.user.update({
         where: { id: user.id },
         data: user
     })
 
     const token = jwt.sign({ _id: user.id }, "secret")
+
+    console.log(token)
 
 
     res.cookie('jwt', token, {
