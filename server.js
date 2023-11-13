@@ -324,7 +324,6 @@ app.get('/validate', async (req, res) => {
 
 app.post('/logout', (req, res) => {
     const jwtCookie = req.cookies['jwt'];
-    console.log("Logging out. JWT cookie: " + jwtCookie);
 
     // Remove the JWT cookie
     res.cookie('jwt', '', { maxAge: 0 });
