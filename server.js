@@ -10,11 +10,18 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
 
-app.use(cors({ credentials: true }));
+const corsOptions = {
+    origin: 'http://localhost:4200',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(express.json())
 app.use(cookieParser())
+
 
 
 // API to create a new user
@@ -178,6 +185,22 @@ app.post('/wipeDatabase', async (req, res) => {
             },
         });
 
+        await prisma.user.create({
+            data: {
+                name: 'Diren',
+                points: 0,
+                messageAmount: 0
+            },
+        });
+
+        await prisma.user.create({
+            data: {
+                name: 'Jon',
+                points: 0,
+                messageAmount: 0
+            },
+        });
+
         res.json({ message: 'Database wiped successfully' });
     } catch (error) {
         console.error(error);
@@ -224,17 +247,13 @@ app.post('/register', async (req, res) => {
     });
 
     if (!user) {
-        res.status(404).json({ error: "User doesn't exist" });
-        return;
+        return res.status(404).json({ error: "User doesn't exist" });
     } else if (user.password != null) {
-        res.status(400).json({ error: "User already registered" });
-        return;
+        return res.status(400).json({ error: "User already registered" });
     } else if (usernameCheck) {
-        res.status(400).json({ error: "Username already taken" });
-        return;
+        return res.status(400).json({ error: "Username already taken" });
     } else if (phoneCheck) {
-        res.status(400).json({ error: "Phone number already taken" });
-        return;
+        return res.status(400).json({ error: "Phone number already taken" });
     }
 
     user.password = hashedPassword
@@ -254,9 +273,7 @@ app.post('/register', async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000
     })
 
-    res.json({
-        message: "success"
-    })
+    res.json(user)
 })
 
 app.post('/login', async (req, res) => {
@@ -265,15 +282,11 @@ app.post('/login', async (req, res) => {
     })
 
     if (!user) {
-        return res.status(404).send({
-            message: 'user not found'
-        })
+        return res.status(404).json({ error: 'User not found' });
     }
 
     if (!await bcrypt.compare(req.body.password, user.password)) {
-        return res.status(400).send({
-            message: 'invalid credentials'
-        })
+        return res.status(400).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign({ _id: user.id }, "secret")
@@ -283,12 +296,10 @@ app.post('/login', async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000 // 1 day
     })
 
-    res.send({
-        message: 'success'
-    })
+    res.send(user)
 })
 
-app.get('/user', async (req, res) => {
+app.get('/validate', async (req, res) => {
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
@@ -312,11 +323,15 @@ app.get('/user', async (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    res.cookie('jwt', '', { maxAge: 0 })
+    const jwtCookie = req.cookies['jwt'];
+    console.log("Logging out. JWT cookie: " + jwtCookie);
+
+    // Remove the JWT cookie
+    res.cookie('jwt', '', { maxAge: 0 });
 
     res.send({
         message: 'success'
-    })
-})
+    });
+});
 
 app.listen(3000, () => console.log('Server running on port 3000'));
