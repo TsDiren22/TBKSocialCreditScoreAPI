@@ -11,6 +11,7 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 const app = express();
 
 app.use(cors({
+    origin: ['https://tbksocialcreditsystem.web.app', 'http://localhost:4200'],
     credentials: true
 }));
 
