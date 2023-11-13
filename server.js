@@ -10,12 +10,9 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
 
-const corsOptions = {
-    origin: 'http://localhost:4200',
-    credentials: true,
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+    credentials: true
+}));
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
