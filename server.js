@@ -230,9 +230,6 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
-    res.header('Access-Control-Allow-Credentials', true);
-
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -286,8 +283,6 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/login', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', true);
     const user = await prisma.user.findUnique({
         where: { username: req.body.username }
     })
@@ -310,8 +305,6 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/validate', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', true);
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
