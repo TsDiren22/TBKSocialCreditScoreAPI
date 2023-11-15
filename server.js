@@ -229,57 +229,66 @@ app.get('/latestMessageDate', async (req, res) => {
 
 app.post('/register', async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(req.body.password, salt)
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     const id = req.body.id;
 
-    const user = await prisma.user.findUnique({
-        where: { id: id },
-    });
+    try {
+        let user = await prisma.user.findUnique({
+            where: { id: id },
+        });
 
-    console.log(user)
+        console.log(user);
 
-    const usernameCheck = await prisma.user.findUnique({
-        where: { username: req.body.username }
-    });
+        if (!user) {
+            return res.status(404).json({ error: "User doesn't exist" });
+        }
 
-    const phoneCheck = await prisma.user.findUnique({
-        where: { phone: req.body.phone }
-    });
+        if (user.password !== null) {
+            return res.status(400).json({ error: "User already registered" });
+        }
 
-    if (!user) {
-        return res.status(404).json({ error: "User doesn't exist" });
-    } else if (user.password != null) {
-        return res.status(400).json({ error: "User already registered" });
-    } else if (usernameCheck) {
-        return res.status(400).json({ error: "Username already taken" });
-    } else if (phoneCheck) {
-        return res.status(400).json({ error: "Phone number already taken" });
+        const usernameCheck = await prisma.user.findUnique({
+            where: { username: req.body.username },
+        });
+
+        const phoneCheck = await prisma.user.findUnique({
+            where: { phone: req.body.phone },
+        });
+
+        if (usernameCheck) {
+            return res.status(400).json({ error: "Username already taken" });
+        }
+
+        if (phoneCheck) {
+            return res.status(400).json({ error: "Phone number already taken" });
+        }
+
+        user = await prisma.user.update({
+            where: { id: id },
+            data: {
+                password: hashedPassword,
+                username: req.body.username,
+                phone: req.body.phone,
+            },
+        });
+
+        const token = jwt.sign({ _id: user.id }, "secret");
+
+        console.log(token);
+
+        res.cookie('jwt', token, {
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error during registration' });
     }
-
-    user.password = hashedPassword
-    user.username = req.body.username
-    user.phone = req.body.phone
-
-    console.log(user)
-
-    await prisma.user.update({
-        where: { id: user.id },
-        data: user
-    })
-
-    const token = jwt.sign({ _id: user.id }, "secret")
-
-    console.log(token)
-
-
-    res.cookie('jwt', token, {
-        maxAge: 24 * 60 * 60 * 1000,
-    });
-
-    res.json(user)
-})
+});
 
 app.post('/login', async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*');
