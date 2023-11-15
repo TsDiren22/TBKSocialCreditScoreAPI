@@ -10,12 +10,14 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
 
+
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:4200',
     credentials: true,
 }));
 
-app.options('*', cors());
+app.options('http://localhost:4200', cors());
+
 
 
 app.use(bodyParser.json({ limit: '50mb' }));
