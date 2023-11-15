@@ -228,7 +228,6 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -276,8 +275,10 @@ app.post('/register', async (req, res) => {
 
     res.cookie('jwt', token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000
-    })
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'None',
+        secure: true // Enable this if your server uses HTTPS
+    });
 
     res.json(user)
 })
@@ -299,8 +300,10 @@ app.post('/login', async (req, res) => {
 
     res.cookie('jwt', token, {
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 1 day
-    })
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'None',
+        secure: true // Enable this if your server uses HTTPS
+    });
 
     res.send(user)
 })
@@ -332,7 +335,7 @@ app.post('/logout', (req, res) => {
     const jwtCookie = req.cookies['jwt'];
 
     // Remove the JWT cookie
-    res.cookie('jwt', '', { maxAge: 0 });
+    res.cookie('jwt', '', { maxAge: 0, sameSite: 'None', secure: true });
 
     res.send({
         message: 'success'
