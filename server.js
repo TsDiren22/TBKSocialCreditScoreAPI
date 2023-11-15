@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cors({
     origin: 'https://tbksocialcreditsystem.web.app',
-    credentials: true
+    credentials: true,
 }));
 
 
@@ -228,6 +228,8 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "https://tbksocialcreditsystem.web.app");
+
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
