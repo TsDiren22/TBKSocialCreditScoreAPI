@@ -12,13 +12,9 @@ const app = express();
 
 
 app.use(cors({
-    origin: 'http://localhost:4200',
+    origin: '*',
     credentials: true,
 }));
-
-app.options('http://localhost:4200', cors());
-
-
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
@@ -232,6 +228,7 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt)
 
@@ -285,6 +282,7 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/login', async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
     const user = await prisma.user.findUnique({
         where: { username: req.body.username }
     })
@@ -307,6 +305,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/validate', async (req, res) => {
+    res.header('Access-Control-Allow-Origin', '*');
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
