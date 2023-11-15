@@ -238,7 +238,7 @@ app.post('/register', async (req, res) => {
     try {
         let user = await prisma.user.findUnique({
             where: { id: id },
-        });
+        })
 
         console.log(user);
 
@@ -246,9 +246,10 @@ app.post('/register', async (req, res) => {
             return res.status(404).json({ error: "User doesn't exist" });
         }
 
-        if (user.password !== null) {
+        if (user.password != null) {
             return res.status(400).json({ error: "User already registered" });
         }
+
 
         const usernameCheck = await prisma.user.findUnique({
             where: { username: req.body.username },
