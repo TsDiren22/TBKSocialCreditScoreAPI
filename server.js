@@ -279,10 +279,7 @@ app.post('/register', async (req, res) => {
 
 
     res.cookie('jwt', token, {
-        httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'None',
-        secure: true // Enable this if your server uses HTTPS
     });
 
     res.json(user)
@@ -306,10 +303,7 @@ app.post('/login', async (req, res) => {
     const token = jwt.sign({ _id: user.id }, "secret")
 
     res.cookie('jwt', token, {
-        httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-        sameSite: 'None',
-        secure: true // Enable this if your server uses HTTPS
     });
 
     res.send(user)
@@ -341,12 +335,10 @@ app.get('/validate', async (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Credentials', true);
     const jwtCookie = req.cookies['jwt'];
 
     // Remove the JWT cookie
-    res.cookie('jwt', '', { maxAge: 0, sameSite: 'None', secure: true });
+    res.cookie('jwt', '', { maxAge: 0 });
 
     res.send({
         message: 'success'
