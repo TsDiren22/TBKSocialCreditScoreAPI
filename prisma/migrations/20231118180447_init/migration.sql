@@ -4,9 +4,9 @@ CREATE TABLE "user" (
     "name" TEXT NOT NULL,
     "points" INTEGER NOT NULL DEFAULT 0,
     "messageAmount" INTEGER NOT NULL DEFAULT 0,
-    "username" TEXT DEFAULT '',
-    "password" TEXT,
-    "phone" TEXT
+    "username" TEXT NOT NULL DEFAULT '',
+    "password" TEXT NOT NULL DEFAULT '',
+    "phone" TEXT NOT NULL DEFAULT ''
 );
 
 -- CreateTable
@@ -14,6 +14,3 @@ CREATE TABLE "lastMessageDate" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "date" DATETIME NOT NULL
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_phone_key" ON "user"("phone");

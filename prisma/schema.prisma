@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["extendedIndexes"]
 }
 
@@ -9,16 +9,16 @@ datasource db {
 }
 
 model user {
-  id            Int            @id @default(autoincrement())
-  name          String  
-  points        Int            @default(0)
-  messageAmount Int            @default(0)
-  username      String        @default("")
-  password      String        @default("")
-  phone         String        @default("")
+  id            Int    @id @default(autoincrement())
+  name          String
+  points        Int    @default(0)
+  messageAmount Int    @default(0)
+  username      String @default("")
+  password      String @default("")
+  phone         String @default("")
 }
 
 model lastMessageDate {
-  id            Int            @id @default(autoincrement())
-  date         DateTime
+  id   Int      @id @default(autoincrement())
+  date DateTime
 }
