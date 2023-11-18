@@ -249,7 +249,7 @@ app.post('/register', async (req, res) => {
 
         console.log("User exists");
 
-        if (user.password != null) {
+        if (user.password != "") {
             return res.status(400).json({ error: "User already registered" });
         }
 

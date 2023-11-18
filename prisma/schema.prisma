@@ -14,7 +14,7 @@ model user {
   points        Int            @default(0)
   messageAmount Int            @default(0)
   username      String?        @default("")
-  password      String?
+  password      String?        @default("")
   phone         String?        @unique
 }
 
