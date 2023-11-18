@@ -321,6 +321,9 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
     const user = await prisma.user.findUnique({
         where: { username: req.body.username }
     })
@@ -343,6 +346,8 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/validate', async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
@@ -366,6 +371,8 @@ app.get('/validate', async (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     const jwtCookie = req.cookies['jwt'];
 
     // Remove the JWT cookie
