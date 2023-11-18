@@ -4,9 +4,9 @@ CREATE TABLE "user" (
     "name" TEXT NOT NULL,
     "points" INTEGER NOT NULL DEFAULT 0,
     "messageAmount" INTEGER NOT NULL DEFAULT 0,
-    "username" TEXT NOT NULL DEFAULT '',
-    "password" TEXT NOT NULL DEFAULT '',
-    "phone" TEXT NOT NULL DEFAULT ''
+    "username" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "phone" TEXT NOT NULL
 );
 
 -- CreateTable

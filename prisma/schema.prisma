@@ -13,9 +13,9 @@ model user {
   name          String
   points        Int    @default(0)
   messageAmount Int    @default(0)
-  username      String @default("")
-  password      String @default("")
-  phone         String @default("")
+  username      String
+  password      String
+  phone         String
 }
 
 model lastMessageDate {

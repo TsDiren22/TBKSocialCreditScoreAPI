@@ -188,7 +188,10 @@ app.post('/wipeDatabase', async (req, res) => {
             data: {
                 name: 'Diren',
                 points: 0,
-                messageAmount: 0
+                messageAmount: 0,
+                username: '',
+                password: '',
+                phone: ''
             },
         });
 
@@ -270,13 +273,13 @@ app.post('/register', async (req, res) => {
         console.log("Phone is not found?");
         console.log(phoneCheck);
 
-        if (usernameCheck.name) {
+        if (usernameCheck.name != '') {
             return res.status(400).json({ error: "Username already taken" });
         }
 
         console.log("Username is not taken");
 
-        if (phoneCheck.phone) {
+        if (phoneCheck.phone != '') {
             return res.status(400).json({ error: "Phone number already taken" });
         }
 
