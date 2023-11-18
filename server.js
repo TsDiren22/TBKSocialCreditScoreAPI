@@ -240,32 +240,46 @@ app.post('/register', async (req, res) => {
             where: { id: id },
         })
 
+        console.log("User is found");
         console.log(user);
 
         if (!user) {
             return res.status(404).json({ error: "User doesn't exist" });
         }
 
+        console.log("User is exists");
+
         if (user.password != null) {
             return res.status(400).json({ error: "User already registered" });
         }
 
+        console.log("User is does not exist yet");
 
         const usernameCheck = await prisma.user.findUnique({
             where: { username: req.body.username },
         });
 
+        console.log("Username is not found?");
+        console.log(usernameCheck);
+
         const phoneCheck = await prisma.user.findUnique({
             where: { phone: req.body.phone },
         });
+
+        console.log("Phone is not found?");
+        console.log(phoneCheck);
 
         if (usernameCheck) {
             return res.status(400).json({ error: "Username already taken" });
         }
 
+        console.log("Username is not taken");
+
         if (phoneCheck) {
             return res.status(400).json({ error: "Phone number already taken" });
         }
+
+        console.log("Phone number is not taken");
 
         user = await prisma.user.update({
             where: { id: id },
@@ -276,13 +290,18 @@ app.post('/register', async (req, res) => {
             },
         });
 
+        console.log("User is updated");
+
         const token = jwt.sign({ _id: user.id }, "secret");
 
+        console.log("Token is created");
         console.log(token);
 
         res.cookie('jwt', token, {
             maxAge: 24 * 60 * 60 * 1000,
         });
+
+        console.log("Cookie is created");
 
         res.json(user);
     } catch (error) {
