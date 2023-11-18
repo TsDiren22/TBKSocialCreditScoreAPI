@@ -189,9 +189,9 @@ app.post('/wipeDatabase', async (req, res) => {
                 name: 'Diren',
                 points: 0,
                 messageAmount: 0,
-                username: '',
-                password: '',
-                phone: ''
+                username: 'default',
+                password: 'default',
+                phone: 'default'
             },
         });
 
@@ -199,7 +199,10 @@ app.post('/wipeDatabase', async (req, res) => {
             data: {
                 name: 'Jon',
                 points: 0,
-                messageAmount: 0
+                messageAmount: 0,
+                username: 'default',
+                password: 'default',
+                phone: 'default'
             },
         });
 
@@ -253,7 +256,7 @@ app.post('/register', async (req, res) => {
         console.log("User exists");
         console.log(user.password);
 
-        if (user.password != undefined) {
+        if (user.password != 'default') {
             return res.status(400).json({ error: "User already registered" });
         }
 
@@ -273,13 +276,13 @@ app.post('/register', async (req, res) => {
         console.log("Phone is not found?");
         console.log(phoneCheck);
 
-        if (usernameCheck.name != '') {
+        if (usernameCheck.name != 'default') {
             return res.status(400).json({ error: "Username already taken" });
         }
 
         console.log("Username is not taken");
 
-        if (phoneCheck.phone != '') {
+        if (phoneCheck.phone != 'default') {
             return res.status(400).json({ error: "Phone number already taken" });
         }
 
