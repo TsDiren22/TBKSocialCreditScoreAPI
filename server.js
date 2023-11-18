@@ -325,7 +325,11 @@ app.post('/login', async (req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     const user = await prisma.user.findFirst({
-        where: { username: req.body.username }
+        where: {
+            username: {
+                equals: req.body.username
+            }
+        }
     })
 
     if (!user) {
