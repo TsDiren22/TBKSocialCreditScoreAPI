@@ -236,7 +236,7 @@ app.post('/register', async (req, res) => {
     const id = req.body.id;
 
     try {
-        let user = await prisma.user.findUnique({
+        let user = await prisma.user.findFirst({
             where: { id: id },
         })
 
@@ -247,22 +247,22 @@ app.post('/register', async (req, res) => {
             return res.status(404).json({ error: "User doesn't exist" });
         }
 
-        console.log("User is exists");
+        console.log("User exists");
 
         if (user.password != null) {
             return res.status(400).json({ error: "User already registered" });
         }
 
-        console.log("User is does not exist yet");
+        console.log("User exists without account");
 
-        const usernameCheck = await prisma.user.findUnique({
+        const usernameCheck = prisma.user.findFirst({
             where: { username: req.body.username },
         });
 
         console.log("Username is not found?");
         console.log(usernameCheck);
 
-        const phoneCheck = await prisma.user.findUnique({
+        const phoneCheck = prisma.user.findFirst({
             where: { phone: req.body.phone },
         });
 
