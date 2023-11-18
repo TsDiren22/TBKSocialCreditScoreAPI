@@ -280,6 +280,8 @@ app.post('/register', async (req, res) => {
         }
 
         console.log("Phone number is not taken");
+        console.log(hashedPassword)
+        console.log(typeof hashedPassword)
 
         user = await prisma.user.update({
             where: { id: id },
