@@ -256,7 +256,7 @@ app.post('/register', async (req, res) => {
         console.log("User exists");
         console.log(user.password);
 
-        if (user.password != 'default') {
+        if (user.password != null) {
             return res.status(400).json({ error: "User already registered" });
         }
 
@@ -276,13 +276,13 @@ app.post('/register', async (req, res) => {
         console.log("Phone is not found?");
         console.log(phoneCheck);
 
-        if (usernameCheck.name != 'default') {
+        if (usernameCheck.name != null) {
             return res.status(400).json({ error: "Username already taken" });
         }
 
         console.log("Username is not taken");
 
-        if (phoneCheck.phone != 'default') {
+        if (phoneCheck.phone != null) {
             return res.status(400).json({ error: "Phone number already taken" });
         }
 
