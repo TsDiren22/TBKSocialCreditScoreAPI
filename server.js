@@ -248,8 +248,9 @@ app.post('/register', async (req, res) => {
         }
 
         console.log("User exists");
+        console.log(user.password + " this is the password")
 
-        if (user.password != "") {
+        if (user.password !== null) {
             return res.status(400).json({ error: "User already registered" });
         }
 
