@@ -240,17 +240,11 @@ app.post('/register', async (req, res) => {
             where: { id: id },
         })
 
-        console.log("User is found");
-        console.log(user);
-
         if (!user) {
             return res.status(404).json({ error: "User doesn't exist" });
         }
 
-        console.log("User exists");
-        console.log(user.password + " this is the password")
-
-        if (user.password !== null) {
+        if (user.password != undefined) {
             return res.status(400).json({ error: "User already registered" });
         }
 
