@@ -311,8 +311,8 @@ app.post('/register', async (req, res) => {
 
         res.cookie('jwt', token, {
             maxAge: 24 * 60 * 60 * 1000,
-
             httpOnly: true,
+            secure: true
         });
 
         console.log("Cookie is created");
@@ -349,6 +349,7 @@ app.post('/login', async (req, res) => {
     res.cookie('jwt', token, {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: true
     });
 
     res.send(user)
