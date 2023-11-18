@@ -12,7 +12,7 @@ const app = express();
 
 
 app.use(cors({
-    origin: 'https://tbksocialcreditsystem.web.app',
+    origin: '*',
     credentials: true,
 }));
 
@@ -234,7 +234,6 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -322,7 +321,6 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     const user = await prisma.user.findUnique({
         where: { username: req.body.username }
     })
@@ -345,7 +343,6 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/validate', async (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
