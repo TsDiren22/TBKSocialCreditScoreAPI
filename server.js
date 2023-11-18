@@ -11,7 +11,7 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 const app = express();
 
 const myCorseOptions = {
-    origin: 'https://tbksocialcreditsystem.web.app',
+    origin: 'http://localhost:4200',
     credentials: true,
 };
 
@@ -310,7 +310,7 @@ app.post('/register', async (req, res) => {
 
         res.cookie('jwt', token, {
             maxAge: 24 * 60 * 60 * 1000,
-            secure: true,
+
             httpOnly: true,
         });
 
@@ -324,7 +324,7 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     const user = await prisma.user.findFirst({
@@ -347,7 +347,6 @@ app.post('/login', async (req, res) => {
 
     res.cookie('jwt', token, {
         maxAge: 24 * 60 * 60 * 1000,
-        secure: true,
         httpOnly: true,
     });
 
@@ -355,7 +354,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.get('/validate', async (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     try {
         const cookie = req.cookies['jwt']
@@ -380,7 +379,7 @@ app.get('/validate', async (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     const jwtCookie = req.cookies['jwt'];
 
@@ -392,5 +391,5 @@ app.post('/logout', (req, res) => {
     });
 });
 
-app.options('https://tbksocialcreditsystem.web.app', cors(myCorseOptions));
+app.options('http://localhost:4200', cors(myCorseOptions));
 app.listen(3000, () => console.log('Server running on port 3000'));
