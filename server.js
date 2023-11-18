@@ -189,9 +189,9 @@ app.post('/wipeDatabase', async (req, res) => {
                 name: 'Diren',
                 points: 0,
                 messageAmount: 0,
-                username: 'default',
-                password: 'default',
-                phone: 'default'
+                username: null,
+                password: null,
+                phone: null,
             },
         });
 
@@ -200,9 +200,9 @@ app.post('/wipeDatabase', async (req, res) => {
                 name: 'Jon',
                 points: 0,
                 messageAmount: 0,
-                username: 'default',
-                password: 'default',
-                phone: 'default'
+                username: null,
+                password: null,
+                phone: null,
             },
         });
 

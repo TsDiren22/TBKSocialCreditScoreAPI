@@ -12,9 +12,9 @@ model user {
   name          String
   points        Int    @default(0)
   messageAmount Int    @default(0)
-  username      String
-  password      String
-  phone         String
+  username      String?
+  password      String?
+  phone         String?
 }
 
 model lastMessageDate {
