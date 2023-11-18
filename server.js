@@ -278,13 +278,13 @@ app.post('/register', async (req, res) => {
         console.log(hashedPassword)
         console.log(typeof hashedPassword)
 
+        user.password = hashedPassword;
+        user.phone = req.body.phone;
+        user.username = req.body.username;
+
         user = await prisma.user.update({
             where: { id: id },
-            data: {
-                password: hashedPassword,
-                username: req.body.username,
-                phone: req.body.phone,
-            },
+            data: user,
         });
 
         console.log("User is updated");
