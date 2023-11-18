@@ -10,11 +10,12 @@ const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
 
-
-app.use(cors({
+const myCorseOptions = {
     origin: 'http://localhost:4200',
     credentials: true,
-}));
+};
+
+app.use(cors(myCorseOptions));
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
@@ -309,6 +310,8 @@ app.post('/register', async (req, res) => {
 
         res.cookie('jwt', token, {
             maxAge: 24 * 60 * 60 * 1000,
+            secure: true,
+            httpOnly: true,
         });
 
         console.log("Cookie is created");
@@ -344,6 +347,8 @@ app.post('/login', async (req, res) => {
 
     res.cookie('jwt', token, {
         maxAge: 24 * 60 * 60 * 1000,
+        secure: true,
+        httpOnly: true,
     });
 
     res.send(user)
@@ -387,4 +392,5 @@ app.post('/logout', (req, res) => {
     });
 });
 
+app.options('http://localhost:4200', cors(myCorseOptions));
 app.listen(3000, () => console.log('Server running on port 3000'));
