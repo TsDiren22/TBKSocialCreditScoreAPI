@@ -269,13 +269,13 @@ app.post('/register', async (req, res) => {
         console.log("Phone is not found?");
         console.log(phoneCheck);
 
-        if (usernameCheck) {
+        if (usernameCheck.name) {
             return res.status(400).json({ error: "Username already taken" });
         }
 
         console.log("Username is not taken");
 
-        if (phoneCheck) {
+        if (phoneCheck.phone) {
             return res.status(400).json({ error: "Phone number already taken" });
         }
 
