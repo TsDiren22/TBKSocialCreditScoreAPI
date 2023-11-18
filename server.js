@@ -324,7 +324,7 @@ app.post('/login', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
         where: { username: req.body.username }
     })
 
