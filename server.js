@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
 const app = express();
+app.set('trust proxy', 1)
 
 const myCorseOptions = {
     origin: 'http://localhost:4200',
