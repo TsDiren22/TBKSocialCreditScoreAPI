@@ -282,6 +282,8 @@ app.post('/register', async (req, res) => {
         user.phone = req.body.phone;
         user.username = req.body.username;
 
+        user.id = undefined;
+
         user = await prisma.user.update({
             where: { id: id },
             data: user,
