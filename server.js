@@ -318,6 +318,7 @@ app.post('/register', async (req, res) => {
             httpOnly: true,
             sameSite: 'None',
             secure: true,
+            path: '/'
         });
 
         console.log("Cookie is created");
@@ -358,6 +359,7 @@ app.post('/login', async (req, res) => {
         httpOnly: true,
         sameSite: 'None',
         secure: true,
+        path: '/'
     });
 
     res.send(user)
