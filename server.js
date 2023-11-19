@@ -316,9 +316,9 @@ app.post('/register', async (req, res) => {
         res.cookie('jwt', token, {
             maxAge: 24 * 60 * 60 * 1000,
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: 'None',
             secure: true,
-            domain: 'https://tbksocialcreditsystem.web.app',
+            domain: 'tbksocialcreditsystem.web.app',
         });
 
         console.log("Cookie is created");
@@ -357,9 +357,9 @@ app.post('/login', async (req, res) => {
     res.cookie('jwt', token, {
         maxAge: 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'None',
         secure: true,
-        domain: 'https://tbksocialcreditsystem.web.app',
+        domain: 'tbksocialcreditsystem.web.app',
     });
 
     res.send(user)
