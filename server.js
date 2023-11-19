@@ -318,7 +318,6 @@ app.post('/register', async (req, res) => {
             httpOnly: true,
             sameSite: 'None',
             secure: true,
-            domain: 'tbksocialcreditsystem.web.app',
         });
 
         console.log("Cookie is created");
@@ -359,7 +358,6 @@ app.post('/login', async (req, res) => {
         httpOnly: true,
         sameSite: 'None',
         secure: true,
-        domain: 'tbksocialcreditsystem.web.app',
     });
 
     res.send(user)
