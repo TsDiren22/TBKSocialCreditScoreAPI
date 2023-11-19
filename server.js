@@ -236,6 +236,10 @@ app.get('/latestMessageDate', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Access-Control-Request-Headers');
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -314,6 +318,7 @@ app.post('/register', async (req, res) => {
             httpOnly: true,
             sameSite: 'none',
             secure: true,
+            domain: 'https://tbksocialcreditsystem.web.app',
         });
 
         console.log("Cookie is created");
@@ -328,6 +333,8 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Access-Control-Request-Headers');
 
     const user = await prisma.user.findFirst({
         where: {
@@ -352,6 +359,7 @@ app.post('/login', async (req, res) => {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
+        domain: 'https://tbksocialcreditsystem.web.app',
     });
 
     res.send(user)
@@ -360,6 +368,9 @@ app.post('/login', async (req, res) => {
 app.get('/validate', async (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Access-Control-Request-Headers');
+
     try {
         const cookie = req.cookies['jwt']
         const claims = jwt.verify(cookie, 'secret')
@@ -385,6 +396,9 @@ app.get('/validate', async (req, res) => {
 app.post('/logout', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', 'https://tbksocialcreditsystem.web.app');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, Access-Control-Request-Headers');
+
     const jwtCookie = req.cookies['jwt'];
 
     // Remove the JWT cookie
