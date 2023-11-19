@@ -402,7 +402,13 @@ app.post('/logout', (req, res) => {
     const jwtCookie = req.cookies['jwt'];
 
     // Remove the JWT cookie
-    res.cookie('jwt', '', { maxAge: 0 });
+    res.cookie('jwt', '', {
+        maxAge: 0,
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+        path: '/'
+    });
 
     res.send({
         message: 'success'
