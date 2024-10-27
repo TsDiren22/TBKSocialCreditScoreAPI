@@ -431,7 +431,7 @@ const keepAlive = () => {
         }).on('error', (err) => {
             console.error('Keep-alive error:', err);
         });
-    }, 5 * 60 * 1000); // 5 minutes interval
+    }, 13 * 60 * 1000); // 5 minutes interval
 };
 
 app.options('https://tbksocialcreditsystem.web.app', cors(myCorseOptions));
