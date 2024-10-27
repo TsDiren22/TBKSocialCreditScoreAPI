@@ -1,23 +1,23 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model user {
-  id            Int    @id @default(autoincrement())
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId// Use auto-generated ObjectID
   name          String
-  points        Int    @default(0)
-  messageAmount Int    @default(0)
+  points        Int      @default(0)
+  messageAmount Int      @default(0)
   username      String?
   password      String?
   phone         String?
 }
 
 model lastMessageDate {
-  id   Int      @id @default(autoincrement())
+  id   String   @id @default(auto()) @map("_id") @db.ObjectId// Use auto-generated ObjectID
   date DateTime
 }

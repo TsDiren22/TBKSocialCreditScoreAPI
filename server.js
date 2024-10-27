@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const path = require('path'); // Import path to serve static files
 const http = require('http'); // Import http for keep-alive
+const { ObjectId } = require('mongodb');
 
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
@@ -97,7 +98,7 @@ app.post('/fuseUsers', async (req, res) => {
 
 app.post('/addPoints/:userId', async (req, res) => {
     try {
-        const userId = parseInt(req.params.userId);
+        const userId = new ObjectId(req.params.userId);
         const pointsToAdd = req.body.pointsToAdd;
 
         // Find the user by ID to ensure it exists
@@ -129,7 +130,7 @@ app.post('/addPoints/:userId', async (req, res) => {
 
 app.post('/addMessageCount/:userId', async (req, res) => {
     try {
-        const userId = parseInt(req.params.userId);
+        const userId = new ObjectId(req.params.userId);
         const messageAmount = req.body.messageAmount;
 
         // Find the user by ID to ensure it exists
