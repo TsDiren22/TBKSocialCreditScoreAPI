@@ -5,6 +5,8 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
+const path = require('path'); // Import path to serve static files
+const http = require('http'); // Import http for keep-alive
 
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
@@ -415,5 +417,26 @@ app.post('/logout', (req, res) => {
     });
 });
 
+
+
+const keepAlive = () => {
+    // A simple GET request to your server
+    setInterval(() => {
+        console.log('Keeping server alive...');
+        // Here you can either use an external API or your own endpoint to check
+        // You might want to create a dedicated keep-alive route
+        http.get(`http://localhost:3000/`, (res) => {
+            console.log(`Keep-alive response status: ${res.statusCode}`);
+        }).on('error', (err) => {
+            console.error('Keep-alive error:', err);
+        });
+    }, 5 * 60 * 1000); // 5 minutes interval
+};
+
 app.options('https://tbksocialcreditsystem.web.app', cors(myCorseOptions));
-app.listen(3000, () => console.log('Server running on port 3000'));
+// Start the server and keep alive
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    keepAlive(); // Start keep alive function
+});
