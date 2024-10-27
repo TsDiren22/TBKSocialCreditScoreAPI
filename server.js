@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const path = require('path'); // Import path to serve static files
 const http = require('http'); // Import http for keep-alive
-import { ObjectId } from 'bson'
+const { ObjectId } = require('bson');
 
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
