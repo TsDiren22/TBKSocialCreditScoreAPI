@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken')
 const cookieParser = require('cookie-parser');
 const path = require('path'); // Import path to serve static files
 const http = require('http'); // Import http for keep-alive
-const { ObjectId } = require('mongodb');
+import { ObjectId } from 'bson'
 
 const prisma = new PrismaClient(); // Create an instance of the Prisma client
 
@@ -22,7 +22,7 @@ const myCorseOptions = {
 app.use(cors(myCorseOptions));
 
 app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', extended: true, parameterLimit: 50000 }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(express.json())
 app.use(cookieParser())
 
